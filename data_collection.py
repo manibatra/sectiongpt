@@ -152,3 +152,15 @@ def create_csv(df: pd.DataFrame, file: str):
     if os.path.exists(file):
         os.remove(file)
     df.to_csv(file, index=False)
+
+
+def prepare_csv_data(file: str, csv_file: str):
+    md_files = get_md_files(file)
+    res = []
+    for file in md_files:
+        if file.split('/')[-1] not in IGNORE_LIST:
+            res.append(generate_data(file))
+
+    df = create_dataframes(res)
+    pd.set_option('display.max_columns', None)
+    create_csv(df, csv_file)
