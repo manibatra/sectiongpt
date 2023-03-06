@@ -27,4 +27,4 @@ def question_answer(question):
 
 
 gr.Interface(fn=question_answer, inputs=["text"], outputs=["markdown"], title="SectionGPT",
-             description="Instant answers to Section docs", server_port=80).launch()
+             description="Instant answers to Section docs").launch(server_name="0.0.0.0", server_port=80)
