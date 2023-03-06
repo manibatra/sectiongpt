@@ -1,8 +1,8 @@
 name: build-and-push-sectiongpt
 on:
   push:
-    paths:
-      - './**'
+    branches:
+      - main
 
 env:
   REGISTRY: ghcr.io
