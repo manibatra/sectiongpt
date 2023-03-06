@@ -61,3 +61,14 @@ def order_document_sections_by_query_similarity(query: str, contexts: dict[(str,
     ], reverse=True)
 
     return document_similarities
+
+
+def potential_contexts_by_query_similarity(query: str, df: pd.DataFrame, embeddings: dict[(str, str), np.array]) -> \
+        list[str]:
+    most_relevant_docs = order_document_sections_by_query_similarity(query, embeddings)[:1]
+
+    potential_contexts = []
+    for _, doc_index in most_relevant_docs:
+        potential_contexts.append(df.loc[doc_index].content)
+
+    return potential_contexts

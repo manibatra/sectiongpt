@@ -1,15 +1,11 @@
-from data_collection import prepare_csv_data
-from embeddings import *
-from completions import *
+import gradio as gr
 
-DOCUMENTS_PATH = "/Users/manibatra/code/section/docs/docs"
-CSV_PATH = "./data/data.csv"
-EMBEDDINGS_CSV_PATH = "./data/embeddings.csv"
+from completions import create_completion
+from embeddings import potential_contexts_by_query_similarity, load_embeddings, read_csv
+from main import EMBEDDINGS_CSV_PATH, CSV_PATH
 
-if __name__ == '__main__':
-    # Organise the data into a CSV file
-    # prepare_csv_data(DOCUMENTS_PATH, CSV_PATH)
 
+def question_answer(question):
     # Compute the document embeddings
     df = read_csv(CSV_PATH, header=0)
     df = df.set_index(['title', 'description'])
@@ -24,8 +20,11 @@ if __name__ == '__main__':
     # print(f"{example_entry[0]} : {example_entry[1][:5]}... ({len(example_entry[1])} entries)")
 
     # Read the query from the user input
-    query = input("Enter your query: ")
-    potential_contexts = potential_contexts_by_query_similarity(query, df, document_embeddings)
+    potential_contexts = potential_contexts_by_query_similarity(question, df, document_embeddings)
 
     # Get the completion for a query
-    print(create_completion(query, potential_contexts))
+    return create_completion(question, potential_contexts)
+
+
+gr.Interface(fn=question_answer, inputs=["text"], outputs=["markdown"], title="SectionGPT",
+             description="Instant answers to Section docs").launch()
