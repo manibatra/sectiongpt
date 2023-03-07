@@ -6,7 +6,7 @@ COPY . .
 
 RUN mkdir -p /data/model
 
-RUN mv ./data/model/data.csv ./data/model/embeddings.csv /data/
+RUN mv ./data/data.csv ./data/embeddings.csv /data/model/
 
 RUN pip install -r requirements.txt
 
