@@ -3,8 +3,8 @@ from embeddings import *
 from completions import *
 
 DOCUMENTS_PATH = "/Users/manibatra/code/section/docs/docs"
-CSV_PATH = "/data/model/data.csv"
-EMBEDDINGS_CSV_PATH = "/data/model/embeddings.csv"
+CSV_PATH = "./data/data.csv"
+EMBEDDINGS_CSV_PATH = "./data/embeddings.csv"
 
 if __name__ == '__main__':
     # Organise the data into a CSV file
