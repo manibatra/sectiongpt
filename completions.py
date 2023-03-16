@@ -4,8 +4,8 @@ import tiktoken
 
 from embeddings import order_document_sections_by_query_similarity
 
-MAX_TOKEN_LENGTH = 2048
-MODEL = "gpt-3.5-turbo"
+MAX_TOKEN_LENGTH = 4096
+MODEL = "gpt-4"
 SYSTEM_SETUP_MESSAGE = 'You are a helpful assistant that works for Section and answers question based on the ' \
                        'provided context. Be concise, format the answer in lists/steps where possible, supply code ' \
                        'examples where ' \
