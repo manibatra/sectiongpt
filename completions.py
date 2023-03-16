@@ -6,6 +6,7 @@ from embeddings import order_document_sections_by_query_similarity
 
 MAX_TOKEN_LENGTH = 4096
 MODEL = "gpt-4"
+ENCODING_FOR_MODEL = "gpt-3.5-turbo-0301"
 SYSTEM_SETUP_MESSAGE = 'You are a helpful assistant that works for Section and answers question based on the ' \
                        'provided context. Be concise, format the answer in lists/steps where possible, supply code ' \
                        'examples where ' \
@@ -18,7 +19,7 @@ def construct_messages(query: str, contexts: list[str]) -> list[dict[str, str]]:
     messages = []
     num_tokens = 0
 
-    encoding = tiktoken.encoding_for_model(MODEL)
+    encoding = tiktoken.encoding_for_model(ENCODING_FOR_MODEL)
 
     # add the system setup message
     messages.append({"role": "system", "content": SYSTEM_SETUP_MESSAGE})
