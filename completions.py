@@ -68,7 +68,9 @@ def create_completion(query: str, contexts: list[str]):
     response = openai.ChatCompletion.create(
         model=MODEL,
         messages=messages,
-        temperature=0,
+        temperature=0.0,
+        presence_penalty=-2,
+        frequency_penalty=0,
         stream=True,
     )
     return response
