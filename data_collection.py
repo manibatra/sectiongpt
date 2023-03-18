@@ -155,7 +155,7 @@ def extract_heading_sections(title, description, content: str) -> list:
                 if section_heading:
                     # add title and description as prefix to improve context matching
                     all_section_headings.append(section_heading)
-                    section_content = [title, description] + section_content
+                    section_content = section_content
                     section_text = '\n'.join(section_content).strip()
                     sections.append((section_heading, section_text))
                 section_heading = line.strip('#').strip()
@@ -167,8 +167,8 @@ def extract_heading_sections(title, description, content: str) -> list:
 
     if section_heading:
         # add title and description as prefix to improve context matching
-        all_section_headings.append(section_heading)
-        section_content = [title, description] + section_content
+        # all_section_headings.append(section_heading)
+        # section_content = [title, description] + section_content
         section_text = '\n'.join(section_content).strip()
         sections.append((section_heading, section_text))
 
@@ -178,14 +178,23 @@ def extract_heading_sections(title, description, content: str) -> list:
         sections.append((section_heading, section_text))
 
     for idx, (heading, section_text) in enumerate(sections):
-        section_content = [title, description] + all_section_headings + section_text.splitlines()
+        # section_content = [title, description] + all_section_headings + section_text.splitlines()
+        section_content = section_text.splitlines()
         updated_section_text = '\n'.join(section_content).strip()
         sections[idx] = (heading, updated_section_text)
 
     return sections
 
 
-def generate_data(file: str) -> list:
+def generate_elaborate_data(file: str) -> tuple:
+    content = read_content(file)
+    title, description = extract_title_description(content)
+    content = remove_title_description(content)
+    tokens = count_tokens(content)
+    return title, description, content, tokens
+
+
+def generate_concise_data(file: str) -> list:
     content = read_content(file)
     title, description = extract_title_description(content)
     content = remove_title_description(content)
@@ -215,9 +224,10 @@ def prepare_csv_data(file: str, csv_file: str):
     res = []
     for file in md_files:
         if file.split('/')[-1] not in IGNORE_LIST:
-            res.extend(generate_data(file))
+            res.extend(generate_concise_data(file))
+            res.append(generate_elaborate_data(file))
 
-    # print(res[0])
+    print(len(res))
     df = create_dataframes(res)
     pd.set_option('display.max_columns', None)
     create_csv(df, csv_file)

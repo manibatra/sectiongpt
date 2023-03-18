@@ -18,6 +18,7 @@ def get_embedding(text: str, model: str = EMBEDDING_MODEL) -> list[float]:
         return result["data"][0]["embedding"]
     except Exception as e:
         print(f"Getting embedding for {text}...")
+        print(e)
         exit(1)
 
 
@@ -59,7 +60,6 @@ def vector_similarity(x: list[float], y: list[float]) -> float:
 def order_document_sections_by_query_similarity(query: str, contexts: dict[(str, str), np.array]) -> list[
     (float, (str, str))]:
     query_embedding = get_embedding(query)
-
     document_similarities = sorted([
         (vector_similarity(query_embedding, doc_embedding), doc_index) for doc_index, doc_embedding in contexts.items()
     ], reverse=True)
@@ -71,6 +71,8 @@ def potential_contexts_by_query_similarity(query: str, df: pd.DataFrame, embeddi
         list[str]:
     most_relevant_docs = order_document_sections_by_query_similarity(query, embeddings)
     # print(len(most_relevant_docs))
+    # for doc in most_relevant_docs:
+    #     print(doc)
 
     potential_contexts = []
     for _, doc_index in most_relevant_docs:
