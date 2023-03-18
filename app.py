@@ -1,5 +1,5 @@
 import gradio as gr
-
+import sys
 from completions import create_completion
 from embeddings import potential_contexts_by_query_similarity, load_embeddings, read_csv
 from main import EMBEDDINGS_CSV_PATH, CSV_PATH
@@ -120,7 +120,51 @@ table {
     color: white !important;
 }
 
+footer {
+    visibility: hidden !important;
+}
+
+@media (prefers-color-scheme: light) {
+    /* Your light mode styles here */
+    body {
+        background-color: #FFFFFF;
+    }
+
+    #input_box {
+        background-color: #FFFFFF;
+        color: #000000;
+    }
+
+    #output_box code {
+        color: #4A5568;
+        background-color: #F7FAFC;
+    }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    /* Your dark mode styles here */
+    body {
+        background-color: #202634;
+    }
+
+    #input_box {
+        background-color: #2D3748;
+        color: #FFFFFF;
+    }
+
+    #output_box code {
+        color: #2D3748;
+        background-color: #CBD5E0;
+    }
+}
+
 """
+
+# if local dev flag is present set the port to 8080
+PORT = 80
+if '--local' in sys.argv:
+    PORT = 8081
 
 with gr.Blocks(css=css, elem_id='gradio_container') as iface:
     gr.Markdown("## SectionGPT", elem_id='title')
@@ -141,7 +185,7 @@ with gr.Blocks(css=css, elem_id='gradio_container') as iface:
 iface.queue()
 
 try:
-    iface.launch(server_name="0.0.0.0", server_port=80)
+    iface.launch(server_name="0.0.0.0", server_port=PORT)
 except KeyboardInterrupt:
     # Code to handle the keyboard interrupt
     gr.close_all()
