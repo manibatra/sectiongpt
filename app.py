@@ -116,6 +116,10 @@ css = """
     margin-top: 50px;
 }
 
+table {
+    color: white !important;
+}
+
 """
 
 with gr.Blocks(css=css, elem_id='gradio_container') as iface:
