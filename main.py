@@ -18,14 +18,14 @@ if __name__ == '__main__':
     # Test
     # print(f"{len(df)} rows in the data")
     # doc_index = ('Kubernetes and Section ', 'Kubernetes API and Section')
-    # print(df.loc[doc_index].content.values)
+    # print(df.loc[doc_index].content)
     #
     # # Create and save the embeddings
-    document_embeddings = compute_doc_embeddings(df)
-    save_embeddings(document_embeddings, EMBEDDINGS_CSV_PATH)
+    # document_embeddings = compute_doc_embeddings(df)
+    # save_embeddings(document_embeddings, EMBEDDINGS_CSV_PATH)
 
     # # Load the document embeddings
-    # document_embeddings = load_embeddings(EMBEDDINGS_CSV_PATH)
+    document_embeddings = load_embeddings(EMBEDDINGS_CSV_PATH)
     #
     # # Test
     # # example_entry = list(document_embeddings.items())[0]
@@ -33,13 +33,16 @@ if __name__ == '__main__':
     #
     # # Read the query from the user input
     # query = input("Enter your query: ")
-    # potential_contexts = potential_contexts_by_query_similarity(query, df, document_embeddings)
-    # # print('Sending to GPT:' + ''.join(potential_contexts[:5]))
+    query = "How to detect the country of the request?"
+    potential_contexts = potential_contexts_by_query_similarity(query, df, document_embeddings)
+    # for context in potential_contexts[:3]:
+    #     print(context)
+    # print('Sending to GPT:' + ''.join(potential_contexts[:5]))
     #
     # # Get the completion for a query
-    # completion_generator = create_completion(query, potential_contexts)
-    # for chunk in completion_generator:
-    #     chunk_message = chunk['choices'][0]['delta']
-    #     if 'content' in chunk_message:
-    #         message = chunk_message['content']
-    #         print(message, end='')
+    completion_generator = create_completion(query, potential_contexts)
+    for chunk in completion_generator:
+        chunk_message = chunk['choices'][0]['delta']
+        if 'content' in chunk_message:
+            message = chunk_message['content']
+            print(message, end='')
