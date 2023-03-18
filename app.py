@@ -89,14 +89,14 @@ css = """
 
 #submit_button {
     background: #4BA570 !important;
-    width: 10%;
+    width: 150px;
     margin: auto;
     color: white;
     padding-left: 1.5rem;
     padding-right: 1.5rem;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
-    border-radius: 4px !important;
+    border-radius: 20px !important;
     transition: background-color 0.15s ease-in-out;
     font-size: 1rem;
     font-weight: 500;
@@ -157,6 +157,11 @@ footer {
         color: #2D3748;
         background-color: #CBD5E0;
     }
+}
+
+.form {
+    width: 80% !important;
+    margin: 50px auto 20px auto !important;
 }
 
 """
