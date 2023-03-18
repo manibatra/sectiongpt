@@ -136,12 +136,68 @@ def read_content(file: str) -> str:
         return lines
 
 
-def generate_data(file: str) -> tuple:
+def extract_heading_sections(title, description, content: str) -> list:
+    sections = []
+    lines = content.splitlines()
+    section_content = []
+    section_heading = None
+    in_code_block = False
+    has_heading = False
+    all_section_headings = []
+
+    for line in lines:
+        if line.strip() == '```':
+            in_code_block = not in_code_block
+
+        if not in_code_block:
+            if line.startswith('#'):
+                has_heading = True
+                if section_heading:
+                    # add title and description as prefix to improve context matching
+                    all_section_headings.append(section_heading)
+                    section_content = [title, description] + section_content
+                    section_text = '\n'.join(section_content).strip()
+                    sections.append((section_heading, section_text))
+                section_heading = line.strip('#').strip()
+                section_content = []
+            else:
+                section_content.append(line)
+        else:
+            section_content.append(line)
+
+    if section_heading:
+        # add title and description as prefix to improve context matching
+        all_section_headings.append(section_heading)
+        section_content = [title, description] + section_content
+        section_text = '\n'.join(section_content).strip()
+        sections.append((section_heading, section_text))
+
+    if not has_heading:
+        section_heading = title + ' ' + description
+        section_text = '\n'.join(lines).strip()
+        sections.append((section_heading, section_text))
+
+    for idx, (heading, section_text) in enumerate(sections):
+        section_content = [title, description] + all_section_headings + section_text.splitlines()
+        updated_section_text = '\n'.join(section_content).strip()
+        sections[idx] = (heading, updated_section_text)
+
+    return sections
+
+
+def generate_data(file: str) -> list:
     content = read_content(file)
     title, description = extract_title_description(content)
     content = remove_title_description(content)
-    tokens = count_tokens(content)
-    return title, description, content, tokens
+    sections = extract_heading_sections(title, description, content)
+
+    data = []
+    for section_heading, section_content in sections:
+        tokens = count_tokens(section_content)
+        if section_content and section_content.strip() != '':
+            data.append((title, section_heading, section_content, tokens))
+
+    return data
 
 
 def create_dataframes(res: list[tuple]) -> pd.DataFrame:
@@ -159,8 +215,9 @@ def prepare_csv_data(file: str, csv_file: str):
     res = []
     for file in md_files:
         if file.split('/')[-1] not in IGNORE_LIST:
-            res.append(generate_data(file))
+            res.extend(generate_data(file))
 
+    # print(res[0])
     df = create_dataframes(res)
     pd.set_option('display.max_columns', None)
     create_csv(df, csv_file)

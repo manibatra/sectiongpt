@@ -10,11 +10,15 @@ def read_csv(file: str, header: int) -> pd.DataFrame:
 
 
 def get_embedding(text: str, model: str = EMBEDDING_MODEL) -> list[float]:
-    result = openai.Embedding.create(
-        model=model,
-        input=text
-    )
-    return result["data"][0]["embedding"]
+    try:
+        result = openai.Embedding.create(
+            model=model,
+            input=text
+        )
+        return result["data"][0]["embedding"]
+    except Exception as e:
+        print(f"Getting embedding for {text}...")
+        exit(1)
 
 
 def compute_doc_embeddings(df: pd.DataFrame) -> dict[tuple[str, str], list[float]]:
@@ -65,10 +69,11 @@ def order_document_sections_by_query_similarity(query: str, contexts: dict[(str,
 
 def potential_contexts_by_query_similarity(query: str, df: pd.DataFrame, embeddings: dict[(str, str), np.array]) -> \
         list[str]:
-    most_relevant_docs = order_document_sections_by_query_similarity(query, embeddings)[:1]
+    most_relevant_docs = order_document_sections_by_query_similarity(query, embeddings)
+    # print(len(most_relevant_docs))
 
     potential_contexts = []
     for _, doc_index in most_relevant_docs:
-        potential_contexts.append(df.loc[doc_index].content)
+        potential_contexts.append(df.loc[doc_index].content.values[0])
 
     return potential_contexts
