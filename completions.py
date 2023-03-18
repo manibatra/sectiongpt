@@ -27,6 +27,7 @@ def construct_messages(query: str, contexts: list[str]) -> list[dict[str, str]]:
     num_tokens += 4  # every message follows <im_start>{role/name}\n{content}<im_end>
     context_setup_prompt = 'Be thorough. If providing relative links (starting with /) at all such as /img/xyz then prefix ' \
                            'them with "https://www.section.io/docs" to https://www.section.io/docs/img/xyz make them  but don\'t change anything else. Provide the answer again even if it is in the context. ' \
+                           'Instead of referring the user to the context provide the information in the answer. ' \
                            'Format the answer in lists/steps where possible, supply code examples where possible  and ' \
                            'if you\'re unsure of the answer, say "Sorry, I don\'t know."\n'
     context_suffix = 'Context: '
